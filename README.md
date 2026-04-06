@@ -1,6 +1,6 @@
 # Diffusion Models from Scratch
 
-A detailed evaluation and experimentation project on Denoising Diffusion Probabilistic Models (DDPMs). This project builds upon the minimal implementation from the [`tiny-diffusion`](https://github.com/brianpulfer/tiny-diffusion) repository, applying the model to the "Dino" 2D dataset and extending the analysis with custom hyperparameter studies and schedules.
+A detailed evaluation and experimentation project on Denoising Diffusion Probabilistic Models (DDPMs). This project builds upon the minimal implementation from the [`tiny-diffusion`](https://github.com/tanelp/tiny-diffusion) repository, applying the model to the "Dino" 2D dataset and extending the analysis with custom hyperparameter studies and schedules.
 
 ## Experimental Results & Findings
 
@@ -37,4 +37,4 @@ I implemented and tested a `cosine` noise schedule to compare against standard l
   ![](results/loss_cosine.png)
 
 ## Acknowledgements 
-The base model architecture is fundamentally derived and adapted from the [tiny-diffusion](https://github.com/brianpulfer/tiny-diffusion) repository by Brian Pulfer. The custom "Dino" toy dataset is part of the [Datasaurus Dozen](https://www.autodesk.com/research/publications/same-stats-different-graphs).
+The base model architecture is fundamentally derived and adapted from the [tiny-diffusion](https://github.com/tanelp/tiny-diffusion) repository by Brian Pulfer. The custom "Dino" toy dataset is part of the [Datasaurus Dozen](https://www.autodesk.com/research/publications/same-stats-different-graphs).
