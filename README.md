@@ -1,76 +1,40 @@
-# tiny-diffusion
+# Diffusion Models from Scratch
 
-A minimal PyTorch implementation of probabilistic diffusion models for 2D datasets. Get started by running `python ddpm.py -h` to explore the available options for training.
+A detailed evaluation and experimentation project on Denoising Diffusion Probabilistic Models (DDPMs). This project builds upon the minimal implementation from the [`tiny-diffusion`](https://github.com/brianpulfer/tiny-diffusion) repository, applying the model to the "Dino" 2D dataset and extending the analysis with custom hyperparameter studies and schedules.
 
-## Forward process
+## Experimental Results & Findings
 
-A visualization of the forward diffusion process being applied to a dataset of one thousand 2D points. Note that the dinosaur is not a single training example, it represents each 2D point in the dataset.
+### 1. Reverse Diffusion Visualization
+Visualizing the denoising process as the model reconstructs the underlying structure of the 2D Dino dataset step-by-step from pure noise.
+![](results/reverse_diffusion.png)
 
-![](static/forward.png)
+### 2. Impact of Diffusion Timesteps (T)
+I experimented with different lengths of the forward/reverse markov chain timesteps (T=10, 100, 300) to observe how the granularity of the noise addition and removal affects the final generation quality. A higher number of timesteps generally yields significantly better structural fidelity.
 
-## Reverse process
+#### Generation Quality
+- **T = 10**: The model struggles to capture fine details over such a short horizon and the generated structure remains quite diffuse.
+  ![](results/sampling_T10.png)
+- **T = 100**: The global structure forms clearly.
+  ![](results/sampling_T100.png)
+- **T = 300**: Generates the most highly detailed and continuous boundaries.
+  ![](results/sampling_T300.png)
 
-This illustration shows how the reverse process recovers the distribution of the training data.
+#### Training Convergence (Loss)
+Longer schedules correspond with slightly different loss behaviors and convergence patterns.
+- **T = 10 Loss**: 
+  ![](results/loss_T10.png)
+- **T = 100 Loss**: 
+  ![](results/loss_T100.png)
+- **T = 300 Loss**: 
+  ![](results/loss_T300.png)
 
-![](static/reverse.png)
+### 3. Linear vs Cosine Noise Schedules
+I implemented and tested a `cosine` noise schedule to compare against standard linear schedules. The cosine schedule often prevents the signal from being destroyed too completely in the early/mid forward diffusion steps, which can lead to improved generation stability and visual boundaries in the final sampling phase.
 
-## Ablations
+- **Cosine Schedule Sampling Results**: 
+  ![](results/sampling_cosine.png)
+- **Cosine Schedule Loss Convergence**: 
+  ![](results/loss_cosine.png)
 
-I have run a series of ablations experiments on hyperparameters, such as learning rate and model size, and visualized the learning process. The columns in the graphs represent the checkpoint epoch, and the rows indicate the hyperparameter values. Each cell displays one thousand generated 2D points.
-
-### learning rate
-
-![](static/learning_rate.png)
-
-The learning process is sensitive to the learning rate. At first, the model's output was poor, causing me to suspect a bug. However, simply changing the learning rate value resolved the problem.
-
-### dataset
-
-![](static/datasets.png)
-
-The current model configuration doesn't work well on the `line` dataset, which I consider the most basic among them. The corners should be clear and sharp, but they are fuzzy.
-
-### num timesteps
-
-![](static/num_timesteps.png)
-
-A longer diffusion process results in a better output. With fewer timesteps, the dinosaur is incomplete, missing points from the top and bottom.
-
-### variance schedule
-
-![](static/beta_schedule.png)
-
-The quadratic schedule does not yield better results. Other schedules like cosine or sigmoid should also be considered.
-
-### hidden size
-
-![](static/hidden_size.png)
-
-The capacity of the model doesn't seem to be a bottleneck, as similar results are obtained across various hidden layer sizes.
-
-### number of hidden layers
-
-![](static/num_hidden_layers.png)
-
-As in the hidden size ablation run, the capacity of the model does not seem to be a limiting factor.
-
-### positional embedding (timestep)
-
-![](static/time_embedding.png)
-
-The model benefits from the timestep information, but the specific method of encoding the timestep is not important.
-
-### positional embedding (inputs)
-
-![](static/input_embedding.png)
-
-The use of sinusoidal embeddings for the inputs helps with learning high-frequency functions in low-dimensional problem domains, such as mapping each (x, y) pixel coordinate to (r, g, b) color, as demonstrated in [this study](https://bmild.github.io/fourfeat/). The same holds true in the current scenario.
-
-## References
-
-* The dino dataset comes from the [Datasaurus Dozen](https://www.autodesk.com/research/publications/same-stats-different-graphs) data.
-* HuggingFace's [diffusers](https://github.com/huggingface/diffusers) library.
-* lucidrains' [DDPM implementation in PyTorch](https://github.com/lucidrains/denoising-diffusion-pytorch).
-* Jonathan Ho's [implementation of DDPM](https://github.com/hojonathanho/diffusion).
-* InFoCusp's [DDPM implementation in tf](https://github.com/InFoCusp/diffusion_models).
-
+## Acknowledgements 
+The base model architecture is fundamentally derived and adapted from the [tiny-diffusion](https://github.com/brianpulfer/tiny-diffusion) repository by Brian Pulfer. The custom "Dino" toy dataset is part of the [Datasaurus Dozen](https://www.autodesk.com/research/publications/same-stats-different-graphs).
